@@ -17,19 +17,19 @@ class AddressBook:
                 mobile = input("Enter the mobile number: ")
                 email = input("Enter the email address: ")
 
-                if not fname.isalpha():
+                if not fname.isalpha() and " " not in fname:
                     raise ValueError("Invalid First Name Format")
                 
-                if not lname.isalpha():
+                if not lname.isalpha() and " " not in lname:
                     raise ValueError("Invalid Last Name Format")
                 
-                if not city.isalpha():
+                if not city.isalpha() and " " not in city:
                     raise ValueError("Invalid City Name Format")
                 
-                if not state.isalpha():
+                if not state.isalpha() and " " not in state:
                     raise ValueError("Invalid State Name Format")
                 
-                if not country.isalpha():
+                if not country.isalpha() and " " not in country:
                     raise ValueError("Invalid Country Name Format")
                 
                 if not "@" in email or not "." in email:
@@ -62,7 +62,7 @@ class AddressBook:
                 print(f"Error: {e}")
                 attempt += 1
         if attempt == 3:
-            print("Maximum attempts reached. Exiting add entry function.")
+            print(" Error: Too many incorrect attempts.")
 
 
     def save_to_disk(self):
@@ -128,8 +128,8 @@ def main():
           
         elif choice == "2":
             fname = input("Enter the term to search First Name: ")
-            
             print(f"Number of Occurrences: {addresses.count_first_names(fname)}")
+
         elif choice == "3":
             lname = input("Enter the term to search Last Name: ")          
             print(f"Number of Occurrences: {addresses.count_last_names(lname)}")
@@ -140,13 +140,13 @@ def main():
 
         elif choice == "5":
             search_term = input("Enter the term to search (First Name, Last Name, or Street Address): ")
-            print(f"Number of Occurrences: {addresses.count_streets(search_term)}")
+            print(f"Number of Occurrences: {addresses.count_occurrences(search_term)}")
 
         elif choice == "6":
             print("Thank you for using the Address Book.")
             break
         else:
-            print("Invalid choice. Please enter a number between 1 and 6.")
+            print("Error: Invalid choice. Please enter a number between 1 and 6.")
 
 if __name__ == "__main__":
     main()
