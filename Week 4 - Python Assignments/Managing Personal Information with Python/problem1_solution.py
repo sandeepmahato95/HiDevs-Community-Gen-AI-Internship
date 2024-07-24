@@ -1,60 +1,80 @@
 import pickle
+import datetime
 
-class PersonData:
-    def __init__(self):
+class PersonalInfo:
+    
+    def __init__(self, filename="problem1_data_file.pickle"):
+        self.filename = filename
         self.data = {}
-        self.load_data()
-
-    def load_data(self):
         try:
-            with open("problem1_data_file.pickle", "rb") as file:
+            with open(self.filename, "rb") as file:
                 self.data = pickle.load(file)
-        except (FileNotFoundError, EOFError):
-            self.data = {}
+        except FileNotFoundError:
+            pass
+
+    def add_info(self):
+        for attempt in range(3):
+            name = input("Enter the name: ")
+            try:
+                if not name.isalpha() and " " not in name:
+                    raise ValueError("Invalid name format")
+            except ValueError as e:
+                print(f"Error: {e}. Please try again.")
+                continue
+            
+            dob_input = input("Enter the date of birth (DD-MM-YYYY): ")
+            try:
+                dob = datetime.datetime.strptime(dob_input, "%d-%m-%Y").date()
+            except ValueError:
+                print("Error: Invalid date format. Please enter in DD-MM-YYYY format.")
+                continue
+            
+            secret = input("Is this date of birth secret? (yes/no): ").lower()
+            if secret == "yes":
+                self.data[name] = "secret"
+            else:
+                self.data[name] = dob
+            
+            self.save_data()
+            print("Information added successfully!")
+            break
+        else:
+            print("Too many incorrect attempts. Try again.")
+
+    def display_info(self):
+        name = input("Enter the name to display the date of birth: ")
+        if name in self.data:
+            if self.data[name] == "secret":
+                print("Secret")
+            else:
+                print(f"Date of Birth: {self.data[name]}")
+        else:
+            print("Person not found.")
 
     def save_data(self):
-        with open("problem1_data_file.pickle", "wb") as file:
+        with open(self.filename, "wb") as file:
             pickle.dump(self.data, file)
 
-    def add_person(self):
-        for attempt in range(3):
-            try:
-                name = input("Enter person's name: ").strip()
-                if not name:
-                    raise ValueError("Name cannot be empty.")
-                dob = input("Enter person's date of birth (dd-mm-yyyy) or 'secret': ").strip()
-                if not dob or (dob.lower() != 'secret' and not self.validate_dob(dob)):
-                    raise ValueError("Invalid date of birth format.")
-                self.data[name] = dob
-                self.save_data()
-                print("Data saved successfully.")
-                return
-            except ValueError as e:
-                print(f"Error: {e}")
-                if attempt == 2:
-                    print("Max attempts reached. Exiting the function.")
+def main():
+    info = PersonalInfo()
 
-    def get_dob(self):
-        name = input("Enter person's name to retrieve DOB: ").strip()
-        dob = self.data.get(name, "Person not found.")
-        if dob.lower() == "secret":
-            print("DOB is secret.")
+    while True:
+        print("\nChoose an option:")
+        print("1. Add Personal Information")
+        print("2. Display Personal Information")
+        print("3. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+           info.add_info()
+        elif choice == "2":
+           info.display_info()
+        elif choice == "3":
+           print("Exiting the personal information management system.")
+           break
         else:
-            print(f"{name}'s DOB is {dob}")
+            print("Error: Invalid choice. Please try again.")
 
-    def validate_dob(self, dob):
-        from datetime import datetime
-        try:
-            datetime.strptime(dob, "%d-%m-%Y")
-            return True
-        except ValueError:
-            return False
-
-# Testing the class
-person_data = PersonData()
-
-# Adding persons
-person_data.add_person()
-
-# Retrieving DOB
-person_data.get_dob()
+if __name__ == "__main__":
+    main()
