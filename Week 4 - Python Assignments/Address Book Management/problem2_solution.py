@@ -1,4 +1,5 @@
 import pickle
+import re
 
 class AddressBook:
     def __init__(self):
@@ -9,34 +10,37 @@ class AddressBook:
         while attempt < 3:
             try: 
                 fname = input("Enter the first name: ")
-                lname = input("Enter the last name: ")
-                street = input("Enter the street address: ")
-                city = input("Enter the city: ")
-                state = input("Enter the state: ")
-                country = input("Enter the country: ")
-                mobile = input("Enter the mobile number: ")
-                email = input("Enter the email address: ")
-
                 if not fname.isalpha() and " " not in fname:
                     raise ValueError("Invalid First Name Format")
-                
+
+                lname = input("Enter the last name: ")
                 if not lname.isalpha() and " " not in lname:
                     raise ValueError("Invalid Last Name Format")
                 
+                street = input("Enter the street address: ")
+                if not street.isalpha() and " " not in street:
+                    raise ValueError("Invalid Street Name Format")               
+
+                city = input("Enter the city: ")
                 if not city.isalpha() and " " not in city:
                     raise ValueError("Invalid City Name Format")
-                
+
+                state = input("Enter the state: ")
                 if not state.isalpha() and " " not in state:
                     raise ValueError("Invalid State Name Format")
                 
+                country = input("Enter the country: ")
                 if not country.isalpha() and " " not in country:
                     raise ValueError("Invalid Country Name Format")
                 
-                if not "@" in email or not "." in email:
-                    raise ValueError("Invalid Email Format")
-                
+                mobile = input("Enter the mobile number: ")
                 if not mobile.isdigit() or len(mobile) != 10:
                     raise ValueError("Invalid Phone Number Format")
+
+                email = input("Enter the email address: ")
+                regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+                if not (re.fullmatch(regex, email)):
+                    raise ValueError("Invalid Email Format")                
 
                 for address in self.addresses:
                  if address['email'] == email or address['mobile'] == mobile:
@@ -62,8 +66,7 @@ class AddressBook:
                 print(f"Error: {e}")
                 attempt += 1
         if attempt == 3:
-            print(" Error: Too many incorrect attempts.")
-
+            print("Error: Too many incorrect attempts.")
 
     def save_to_disk(self):
         try:
@@ -143,7 +146,7 @@ def main():
             print(f"Number of Occurrences: {addresses.count_occurrences(search_term)}")
 
         elif choice == "6":
-            print("Thank you for using the Address Book.")
+            print("Exiting.. Thank you for using the Address Book.")
             break
         else:
             print("Error: Invalid choice. Please enter a number between 1 and 6.")
