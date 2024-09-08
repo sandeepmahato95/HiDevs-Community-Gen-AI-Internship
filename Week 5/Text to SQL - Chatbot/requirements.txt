@@ -1,9 +1,0 @@
-streamlit
-google-generativeai
-python-dotenv
-langchain
-langchain-community
-langchain-google-genai
-SpeechRecognition
-pyaudio
-setuptools
